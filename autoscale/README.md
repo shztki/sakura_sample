@@ -48,4 +48,4 @@ terraform output -raw ssh_private_key > ~/.ssh/sshkey
 chmod 600 ~/.ssh/sshkey
 ```
 
-
+* 手動で別途作成するオートスケール設定にて、ELB側は `192.168.201.64/27`、LB側は `192.168.201.32/27` を assign_cidr_block に設定し、max_size は 5 にする想定のため、ここで作成するサーバに付与するプライベートIP はその前の部分になるように計算式を入れたり、必要な数の SSH用のポートフォワード設定が自動で入るようにしています。
