@@ -96,17 +96,17 @@ variable "switch01" {
 
 variable "script01" {
   default = {
-    name  = "autoscale-centos-lb-init"
+    name  = "autoscale-centos-elb-init"
     class = "shell" # shell or yaml_cloud_config
-    file  = "userdata/autoscale_centos_lb_init.sh"
+    file  = "userdata/autoscale_centos_elb_init.sh"
   }
 }
 
 variable "script02" {
   default = {
-    name  = "autoscale-centos-elb-init"
+    name  = "autoscale-centos-lb-init"
     class = "shell" # shell or yaml_cloud_config
-    file  = "userdata/autoscale_centos_elb_init.sh"
+    file  = "userdata/autoscale_centos_lb_init.sh"
   }
 }
 
@@ -130,22 +130,22 @@ variable "vpc_router01" {
     plan                = "premium" # premium / standard
     vrid                = 200
     internet_connection = true
-    start_ip1           = 254
-    start_ip2           = 253
-    start_ip3           = 252
+    vip1                = 254
+    interface_ip1       = 253
+    interface_ip2       = 252
   }
 }
 
 variable "lb01" {
   default = {
-    name        = "lb"
-    memo        = "example"
-    plan        = "standard"
-    vrid        = 100
-    loopback_ip = ""
-    vip1        = 250
-    start_ip1   = 249
-    start_ip2   = 248
+    name          = "lb"
+    memo          = "example"
+    plan          = "standard"
+    vrid          = 100
+    loopback_ip   = ""
+    vip1          = 250
+    interface_ip1 = 249
+    interface_ip2 = 248
   }
 }
 

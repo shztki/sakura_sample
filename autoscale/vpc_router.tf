@@ -18,8 +18,8 @@ resource "sakuracloud_vpc_router" "vpc_router01" {
   private_network_interface {
     index        = 1
     switch_id    = sakuracloud_switch.switch01[0].id
-    vip          = cidrhost(var.switch01["name"], var.vpc_router01["start_ip1"])
-    ip_addresses = [cidrhost(var.switch01["name"], var.vpc_router01["start_ip2"]), cidrhost(var.switch01["name"], var.vpc_router01["start_ip3"])]
+    vip          = cidrhost(var.switch01["name"], var.vpc_router01["vip1"])
+    ip_addresses = [cidrhost(var.switch01["name"], var.vpc_router01["interface_ip1"]), cidrhost(var.switch01["name"], var.vpc_router01["interface_ip2"])]
     netmask      = tostring(element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
   }
 

@@ -45,7 +45,6 @@ resource "sakuracloud_server" "server02" {
   commitment       = var.server02["commitment"]
   interface_driver = var.server02["interface_driver"]
 
-
   network_interface {
     upstream = sakuracloud_switch.switch01[0].id
   }
@@ -60,6 +59,9 @@ resource "sakuracloud_server" "server02" {
     disable_pw_auth = var.server02["disable_pw_auth"]
     note {
       id = sakuracloud_note.script02.id
+      variables = {
+        loopback_ip = cidrhost(var.switch01["name"], var.lb01["vip1"])
+      }
     }
   }
 

@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # @sacloud-once
+# @sacloud-text maxlen=15 loopback_ip "LOOPBACK IPADDRESS(*.*.*.*)"
 
 # ループバックインターフェースへのVIPアドレス設定
-nmcli connection add type dummy ifname vip01 ipv4.method manual ipv4.addresses 192.168.201.250/32 ipv6.method ignore
+LOOPBACK_IP=@@@loopback_ip@@@ 	# *.*.*.*
+nmcli connection add type dummy ifname vip01 ipv4.method manual ipv4.addresses $LOOPBACK_IP/32 ipv6.method ignore
 
 # バーチャルサーバー宛のARPに応答しないようにする
 cat <<EOL >> /etc/sysctl.conf

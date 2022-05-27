@@ -2,8 +2,8 @@ resource "sakuracloud_load_balancer" "lb01" {
   network_interface {
     switch_id    = sakuracloud_switch.switch01[0].id
     vrid         = var.lb01["vrid"]
-    ip_addresses = [cidrhost(var.switch01["name"], var.lb01["start_ip1"]), cidrhost(var.switch01["name"], var.lb01["start_ip2"])]
-    gateway      = cidrhost(var.switch01["name"], var.vpc_router01["start_ip1"])
+    ip_addresses = [cidrhost(var.switch01["name"], var.lb01["interface_ip1"]), cidrhost(var.switch01["name"], var.lb01["interface_ip2"])]
+    gateway      = cidrhost(var.switch01["name"], var.vpc_router01["vip1"])
     netmask      = tostring(element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
   }
 
