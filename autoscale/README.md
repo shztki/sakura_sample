@@ -7,7 +7,7 @@
 
 ```
 git clone https://github.com/shztki/sakura_sample
-cd sakura_sample/
+cd sakura_sample/autoscale
 ```
 
 * 環境変数に最低限以下の設定が必要です。
