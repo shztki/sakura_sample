@@ -12,7 +12,7 @@ cd sakura_sample/
 ```
 SAKURACLOUD_ACCESS_TOKEN_SECRET=******************** → シークレットキー
 SAKURACLOUD_ACCESS_TOKEN=*************************** → アクセスキー
-TF_VAR_def_pass=************************************ → サーバーに設定する rootパスワード
+TF_VAR_def_pass=************************************ → サーバに設定する rootパスワード
 TF_VAR_office_cidr=**.**.**.**/**                    → サーバへの SSHアクセス等を許可する送信元
 TF_VAR_my_domain=****.com                            → さくらのクラウドにゾーン追加しているドメイン(無ければ設定不要)
 ```
