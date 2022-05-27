@@ -25,7 +25,7 @@ resource "sakuracloud_server" "server01" {
     password        = var.def_pass
     disable_pw_auth = var.server01["disable_pw_auth"]
     note {
-      id = sakuracloud_note.autoscale_centos_elb_init.id
+      id = sakuracloud_note.script01.id
       variables = {
         eth1_ip = format("%s/%s", cidrhost(var.switch01["name"], 65 - var.server01["count"] + count.index), element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
       }
@@ -59,7 +59,7 @@ resource "sakuracloud_server" "server02" {
     password        = var.def_pass
     disable_pw_auth = var.server02["disable_pw_auth"]
     note {
-      id = sakuracloud_note.autoscale_centos_lb_init.id
+      id = sakuracloud_note.script02.id
     }
   }
 

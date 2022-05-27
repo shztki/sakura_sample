@@ -1,13 +1,13 @@
-resource "sakuracloud_note" "autoscale_centos_lb_init" {
-  name    = "autoscale_centos_lb_init"
-  class   = "shell"
-  content = file("userdata/autoscale_centos_lb_init.sh")
+resource "sakuracloud_note" "script01" {
+  name    = format("%s-%s", module.label.id, var.script01["name"])
+  class   = var.script01["class"]
+  content = file(var.script01["file"])
   tags    = module.label.attributes
 }
 
-resource "sakuracloud_note" "autoscale_centos_elb_init" {
-  name    = "autoscale_centos_elb_init"
-  class   = "shell"
-  content = file("userdata/autoscale_centos_elb_init.sh")
+resource "sakuracloud_note" "script02" {
+  name    = format("%s-%s", module.label.id, var.script02["name"])
+  class   = var.script02["class"]
+  content = file(var.script02["file"])
   tags    = module.label.attributes
 }

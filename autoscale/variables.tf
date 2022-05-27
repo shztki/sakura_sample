@@ -94,6 +94,22 @@ variable "switch01" {
   }
 }
 
+variable "script01" {
+  default = {
+    name  = "autoscale-centos-lb-init"
+    class = "shell" # shell or yaml_cloud_config
+    file  = "userdata/autoscale_centos_lb_init.sh"
+  }
+}
+
+variable "script02" {
+  default = {
+    name  = "autoscale-centos-elb-init"
+    class = "shell" # shell or yaml_cloud_config
+    file  = "userdata/autoscale_centos_elb_init.sh"
+  }
+}
+
 variable "router01" {
   default = {
     count       = 1
