@@ -42,7 +42,7 @@ variable "filter01" {
 
 variable "disk01" {
   default = {
-    size      = 20       # min win:100 / linux:20
+    size      = 20       # min_linux:20
     plan      = "ssd"    # ssd or hdd
     connector = "virtio" # virtio or ide
     memo      = "example"

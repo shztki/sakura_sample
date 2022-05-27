@@ -44,34 +44,3 @@ data "sakuracloud_archive" "ubuntu20" {
   os_type  = "ubuntu2004"
 }
 
-data "sakuracloud_archive" "vsrx_std_100" {
-  for_each = toset(local.zones)
-  zone     = each.value
-  filter {
-    names = ["Juniper vSRX スタンダード"]
-  }
-}
-
-data "sakuracloud_archive" "win2019" {
-  for_each = toset(local.zones)
-  zone     = each.value
-  os_type  = "windows2019"
-}
-
-data "sakuracloud_archive" "win2019_rds" {
-  for_each = toset(local.zones)
-  zone     = each.value
-  os_type  = "windows2019-rds"
-}
-
-data "sakuracloud_archive" "win2016_rds" {
-  for_each = toset(local.zones)
-  zone     = each.value
-  os_type  = "windows2016-rds"
-}
-
-data "sakuracloud_archive" "win2016_sql_std" {
-  for_each = toset(local.zones)
-  zone     = each.value
-  os_type  = "windows2016-sql-standard"
-}
