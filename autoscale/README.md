@@ -49,3 +49,23 @@ chmod 600 ~/.ssh/sshkey
 ```
 
 * 手動で別途作成するオートスケール設定にて、ELB側は `192.168.201.64/27`、LB側は `192.168.201.32/27` を assign_cidr_block に設定し、max_size は 5 にする想定のため、ここで作成するサーバに付与するプライベートIP はその前の部分になるように計算式を入れたり、必要な数の SSH用のポートフォワード設定が自動で入るようにしています。
+
+* 共有セグメントに変更したい場合は、変更箇所は以下です。
+
+```
+router.tf
+→ ファイルは削除するか末尾に .disable を付けて無効化
+
+variables.tf
+→ vpc_router01 の plan を standard に変更
+
+server.tf
+→ 1つめの network_interface を upstream = "shared" に変更
+→ disk_edit_parameter の ip_address はコメントアウト
+→ disk_edit_parameter の gateway はコメントアウト
+→ disk_edit_parameter の netmask はコメントアウト
+
+vpc_router.tf
+→ public_network_interface ブロックをすべてコメントアウト
+```
+
