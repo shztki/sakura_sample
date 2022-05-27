@@ -1,5 +1,8 @@
 # Terraform でのさくらのクラウド環境構築サンプル
 
+* 以下のような構成を作るサンプルです。  
+<img src="./img/sakura_autoscale_sample.png" width="640">
+
 * ご利用の環境でリポジトリをクローンしてください。
 
 ```
