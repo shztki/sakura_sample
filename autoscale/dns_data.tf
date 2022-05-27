@@ -11,8 +11,8 @@ data "sakuracloud_dns" "dns" {
 #  name   = format("%s%03d", var.server01["name"], count.index + 1)
 #  type   = "A"
 #  ttl    = 300
-#  value  = sakuracloud_internet.router01[0].ip_addresses[count.index + 3]
-#  #  value  = element(sakuracloud_server.server01.*.ip_address, count.index)
+#  #value  = sakuracloud_internet.router01[0].ip_addresses[count.index + 3]
+#  value  = element(sakuracloud_server.server01.*.ip_address, count.index)
 #}
 
 #resource "sakuracloud_dns_record" "record_gslb" {
@@ -36,6 +36,6 @@ resource "sakuracloud_dns_record" "record_elb01" {
   name   = var.elb01["name"]
   type   = "ALIAS" # "CNAME"
   ttl    = 60
-  #  value = sakuracloud_proxylb.elb01.vip
+  #value = sakuracloud_proxylb.elb01.vip
   value = format("%s.", sakuracloud_proxylb.elb01.fqdn)
 }

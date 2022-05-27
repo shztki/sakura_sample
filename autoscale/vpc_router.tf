@@ -1,11 +1,10 @@
 resource "sakuracloud_vpc_router" "vpc_router01" {
-  count       = var.vpc_router01["count"]
-  name        = format("%s-%s", module.label.id, var.vpc_router01["name"])
-  description = var.vpc_router01["memo"]
-  version     = var.vpc_router01["version"]
-  tags        = module.label.attributes
-  plan        = var.vpc_router01["plan"]
-
+  count               = var.vpc_router01["count"]
+  name                = format("%s-%s", module.label.id, var.vpc_router01["name"])
+  description         = var.vpc_router01["memo"]
+  version             = var.vpc_router01["version"]
+  tags                = module.label.attributes
+  plan                = var.vpc_router01["plan"]
   internet_connection = var.vpc_router01["internet_connection"]
 
   public_network_interface {

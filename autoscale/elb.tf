@@ -40,5 +40,4 @@ resource "sakuracloud_proxylb" "elb01" {
       group      = "gr1"
     }
   }
-
 }
