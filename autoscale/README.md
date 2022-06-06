@@ -40,7 +40,7 @@ terraform apply
 
 * ドメインの利用がある場合([sakuracloud_proxylb_acme](https://registry.terraform.io/providers/sacloud/sakuracloud/latest/docs/resources/proxylb_acme) を利用している場合)、エンハンスドロードバランサのルールのみ、なぜか作成されません(バグ？)。
 再度 apply を実行すれば追加されるので、お手数ですが二度実行してください。
-  * sakuracloud v2.17.1 で修正されました
+  * sakuracloud v2.17.1 で修正されました。
 
 * SSH鍵ファイルは [ssh_key_gen](https://registry.terraform.io/providers/sacloud/sakuracloud/latest/docs/resources/ssh_key_gen) で生成されるようにしています。
 `terrform apply` 実行後は以下のようにして、SSH鍵ファイルを作成ください。(`make apply` で実行した場合は不要です)
