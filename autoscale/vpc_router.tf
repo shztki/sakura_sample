@@ -23,11 +23,11 @@ resource "sakuracloud_vpc_router" "vpc_router01" {
   }
 
   dynamic "port_forwarding" {
-    for_each = range(33 - var.server02["count"], 33 + 5)
+    for_each = range(var.server02["start_ip"], var.server02["start_ip"] + var.server02["count"] + 5)
     content {
       protocol     = "tcp"
       public_port  = 22 + port_forwarding.key
-      private_ip   = cidrhost(var.switch01["name"], 33 - var.server02["count"] + port_forwarding.key)
+      private_ip   = cidrhost(var.switch01["name"], var.server02["start_ip"] + port_forwarding.key)
       private_port = 22
       description  = "desc"
     }

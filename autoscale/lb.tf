@@ -20,7 +20,7 @@ resource "sakuracloud_load_balancer" "lb01" {
     dynamic "server" {
       for_each = sakuracloud_server.server02
       content {
-        ip_address = cidrhost(var.switch01["name"], 33 - var.server02["count"] + server.key)
+        ip_address = cidrhost(var.switch01["name"], var.server02["start_ip"] + server.key)
         protocol   = "http"
         path       = "/"
         status     = 200

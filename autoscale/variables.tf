@@ -9,6 +9,7 @@ variable "zones" {
 variable "def_pass" {}
 variable "my_domain" {}
 variable "office_cidr" {}
+variable "api_key_id" {}
 
 variable "label" {
   default = {
@@ -69,6 +70,7 @@ variable "server01" {
     name             = "elb-base"
     memo             = "example"
     disable_pw_auth  = true
+    start_ip         = 10
   }
 }
 
@@ -83,6 +85,7 @@ variable "server02" {
     name             = "lb-base"
     memo             = "example"
     disable_pw_auth  = true
+    start_ip         = 20
   }
 }
 
@@ -152,7 +155,7 @@ variable "lb01" {
 variable "elb01" {
   default = {
     region         = "anycast" # is1 or tk1 or anycast
-    name           = "elbtest001"
+    name           = "elbtest003"
     memo           = "example"
     plan           = 1000
     vip_failover   = true # dns is true:fqdn or false:vip

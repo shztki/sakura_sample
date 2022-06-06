@@ -15,6 +15,7 @@ cd sakura_sample/autoscale
 ```
 SAKURACLOUD_ACCESS_TOKEN_SECRET=******************** → シークレットキー
 SAKURACLOUD_ACCESS_TOKEN=*************************** → アクセスキー
+TF_VAR_api_key_id=********************************** → オートスケール実行用APIキーのリソースID
 TF_VAR_def_pass=************************************ → サーバに設定する rootパスワード
 TF_VAR_office_cidr=**.**.**.**/**                    → サーバへの SSHアクセス等を許可する送信元
 TF_VAR_my_domain=****.com                            → さくらのクラウドにゾーン追加しているドメイン(無ければ設定不要)
@@ -39,6 +40,7 @@ terraform apply
 
 * ドメインの利用がある場合([sakuracloud_proxylb_acme](https://registry.terraform.io/providers/sacloud/sakuracloud/latest/docs/resources/proxylb_acme) を利用している場合)、エンハンスドロードバランサのルールのみ、なぜか作成されません(バグ？)。
 再度 apply を実行すれば追加されるので、お手数ですが二度実行してください。
+ * sakuracloud v2.17.1 で修正されました
 
 * SSH鍵ファイルは [ssh_key_gen](https://registry.terraform.io/providers/sacloud/sakuracloud/latest/docs/resources/ssh_key_gen) で生成されるようにしています。
 `terrform apply` 実行後は以下のようにして、SSH鍵ファイルを作成ください。(`make apply` で実行した場合は不要です)
@@ -47,8 +49,6 @@ terraform apply
 terraform output -raw ssh_private_key > ~/.ssh/sshkey
 chmod 600 ~/.ssh/sshkey
 ```
-
-* 手動で別途作成するオートスケール設定にて、ELB側は `192.168.201.64/27`、LB側は `192.168.201.32/27` を assign_cidr_block に設定し、max_size は 5 にする想定のため、ここで作成するサーバに付与するプライベートIP はその前の部分になるように計算式を入れたり、必要な数の SSH用のポートフォワード設定が自動で入るようにしています。
 
 * 共有セグメントに変更したい場合は、変更箇所は以下です。
 
@@ -68,9 +68,27 @@ server.tf
 vpc_router.tf
 → public_network_interface ブロックをすべてコメントアウト
 → private_network_interface の vip をコメントアウトし、ip_addresses は [cidrhost(var.switch01["name"], var.vpc_router01["vip1"])] に変更する
+
+autoscale.tf
+→ elb_hscale01側の network_interfaces の 1つ目を upstream : "shared" に修正し、assign_cidr_block/assign_netmask_len/default_route の 3行は削除ください。
 ```
 
-## エンハンスドロードバランサでの水平オートスケールの設定サンプル
+* オートスケール設定も Terraform で実装してはいますが、現状実行時に以下のように表示されるとおり、まだオープンベータのサービスであることもあり、仕様が変更になる可能性がありますので、ご注意ください。また、本来は config を yamlencode で渡したいところでしたが、YAMLパーサーにバグがあるようで、不可でした。このため、jsonencode を利用しています。コントロールパネルでの設定ファイルが見づらくなりますが、ご了承ください。
+
+```
+│ Warning: Deprecated Resource
+│
+│   with sakuracloud_auto_scale.elb_hscale01,
+│   on autoscale.tf line 8, in resource "sakuracloud_auto_scale" "elb_hscale01":
+│    8: resource "sakuracloud_auto_scale" "elb_hscale01" {
+│
+│ sakuracloud_auto_scale is an experimental resource. Please note that you will need to
+│ update the tfstate manually if the resource schema is changed.
+│
+│ (and 3 more similar warnings elsewhere)
+```
+
+## エンハンスドロードバランサでの水平オートスケールの設定サンプル(YAML版)
 
 * 設定
 
@@ -113,7 +131,7 @@ resources:
         - upstream:
             names: ["shztki-dev-autoscale-router01"]
           packet_filter_id: 作成したリソースID
-          assign_cidr_block: "**.**.**.56/29" #.57 から順に割り当てられる
+          assign_cidr_block: "**.**.**.56/28" #.57 から順に割り当てられる
           assign_netmask_len: 28
           default_route: "**.**.**.49"
           expose:
@@ -122,7 +140,7 @@ resources:
 
         - upstream:
             names: ["shztki-dev-autoscale-192.168.201.0/24"]
-          assign_cidr_block: "192.168.201.64/27" #.65から順に割り当てられる
+          assign_cidr_block: "192.168.201.10/24" #.11から順に割り当てられる
           assign_netmask_len: 24
 
       disks:
@@ -174,7 +192,7 @@ autoscaler:
   cooldown: 300
 ```
 
-## ロードバランサでの水平オートスケールの設定サンプル
+## ロードバランサでの水平オートスケールの設定サンプル(YAML版)
 
 * 設定
 
@@ -211,7 +229,7 @@ resources:
         # eth0
         - upstream:
             names: ["shztki-dev-autoscale-192.168.201.0/24"]
-          assign_cidr_block: "192.168.201.32/27" #.33 から順に割り当てられる
+          assign_cidr_block: "192.168.201.20/24" #.21 から順に割り当てられる
           assign_netmask_len: 24
           default_route: "192.168.201.254"
           expose:
@@ -281,4 +299,4 @@ autoscaler:
 
 * オートスケールに耐えうる構成とする場合、起動テンプレートとなるようなマスターイメージの管理や、ログ等の外部保存、ステートレスな設計など、システムの構成をしっかり考える必要があります。  
 
-* 設定ファイル内で type を `ServerGroup` としたときの `name` の指定には、最大限注意するようにしてください。水平オートスケールで、万が一ここを指定しないと、すべてに合致するとみなされ、対象ゾーンに存在するすべてのサーバ/ディスクが削除されてしまう危険性があります( `min_size : 0` のとき)。また、短い単語等にしてしまうと、うっかり他のサーバにもマッチしてしまい、消される恐れもあります。本サンプルでは `shztki-dev-autoscale-elb-group` のようにあえて長くし、かつ一致することも無いようにしています。  
+* 設定ファイル内で type を `ServerGroup` としたときの `name (server_name_prefix)` の指定には、最大限注意するようにしてください。水平オートスケールで、万が一無関係のサーバ名にも合致してしまう場合、既存のサーバ/ディスクが削除されてしまう危険性があります( `min_size : 0` のとき)。本サンプルでは `shztki-dev-autoscale-elb-group` のようにあえて長くすることで、リスクが減るようにしています。  

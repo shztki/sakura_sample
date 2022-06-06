@@ -27,7 +27,7 @@ resource "sakuracloud_server" "server01" {
     note {
       id = sakuracloud_note.script01.id
       variables = {
-        eth1_ip = format("%s/%s", cidrhost(var.switch01["name"], 65 - var.server01["count"] + count.index), element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
+        eth1_ip = format("%s/%s", cidrhost(var.switch01["name"], var.server01["start_ip"] + count.index), element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
       }
     }
   }
@@ -50,8 +50,8 @@ resource "sakuracloud_server" "server02" {
   }
 
   disk_edit_parameter {
-    ip_address      = cidrhost(var.switch01["name"], 33 - var.server02["count"] + count.index)
-    gateway         = cidrhost(var.switch01["name"], 254)
+    ip_address      = cidrhost(var.switch01["name"], var.server02["start_ip"] + count.index)
+    gateway         = cidrhost(var.switch01["name"], var.vpc_router01["vip1"])
     netmask         = tostring(element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
     hostname        = format("%s-%03d", var.server02["name"], count.index + 1)
     ssh_key_ids     = [sakuracloud_ssh_key_gen.sshkey01.id]
