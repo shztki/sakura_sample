@@ -155,7 +155,7 @@ variable "lb01" {
 variable "elb01" {
   default = {
     region         = "anycast" # is1 or tk1 or anycast
-    name           = "elbtest003"
+    name           = "elbtest001"
     memo           = "example"
     plan           = 1000
     vip_failover   = true # dns is true:fqdn or false:vip
