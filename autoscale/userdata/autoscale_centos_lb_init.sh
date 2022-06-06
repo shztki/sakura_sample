@@ -3,6 +3,12 @@
 # @sacloud-once
 # @sacloud-text maxlen=15 loopback_ip "LOOPBACK IPADDRESS(*.*.*.*)"
 
+if [ $(grep -c "release 8" /etc/redhat-release) -eq 1 ] ;then
+        sleep 180
+else
+        exit 0
+fi
+
 # ループバックインターフェースへのVIPアドレス設定
 LOOPBACK_IP=@@@loopback_ip@@@ 	# *.*.*.*
 nmcli connection add type dummy ifname vip01 ipv4.method manual ipv4.addresses $LOOPBACK_IP/32 ipv6.method ignore

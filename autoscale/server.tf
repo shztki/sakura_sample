@@ -20,7 +20,7 @@ resource "sakuracloud_server" "server01" {
     ip_address      = sakuracloud_internet.router01[0].ip_addresses[count.index + 3]
     gateway         = sakuracloud_internet.router01[0].gateway
     netmask         = var.router01["nw_mask_len"]
-    hostname        = format("%s-%03d", var.server01["name"], count.index + 1)
+    hostname        = format("%s-%s-%03d", module.label.id, var.server01["name"], count.index + 1)
     ssh_key_ids     = [sakuracloud_ssh_key_gen.sshkey01.id]
     password        = var.def_pass
     disable_pw_auth = var.server01["disable_pw_auth"]
@@ -53,7 +53,7 @@ resource "sakuracloud_server" "server02" {
     ip_address      = cidrhost(var.switch01["name"], var.server02["start_ip"] + count.index)
     gateway         = cidrhost(var.switch01["name"], var.vpc_router01["vip1"])
     netmask         = tostring(element(regex("^\\d+.\\d+.\\d+.\\d+/(\\d+)", var.switch01["name"]), 0))
-    hostname        = format("%s-%03d", var.server02["name"], count.index + 1)
+    hostname        = format("%s-%s-%03d", module.label.id, var.server02["name"], count.index + 1)
     ssh_key_ids     = [sakuracloud_ssh_key_gen.sshkey01.id]
     password        = var.def_pass
     disable_pw_auth = var.server02["disable_pw_auth"]

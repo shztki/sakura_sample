@@ -3,6 +3,12 @@
 # @sacloud-once
 # @sacloud-text maxlen=18 eth1_ip "ETH1 IPADDRESS(*.*.*.*/*)"
 
+if [ $(grep -c "release 8" /etc/redhat-release) -eq 1 ] ;then
+        sleep 30
+else
+        exit 0
+fi
+
 # eth1へのIPアドレス設定
 IP=@@@eth1_ip@@@
 nmcli con mod "System eth1" \
