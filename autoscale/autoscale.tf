@@ -1,6 +1,8 @@
 locals {
   api_key_id               = var.api_key_id
   zone                     = var.default_zone
+  elb01_name               = "elb-group" # var.server01["name"]
+  lb01_name                = "lb-group"  # var.server02["name"]
   elb01_server_name_prefix = format("%s-%s", module.label.id, "elb")
   lb01_server_name_prefix  = format("%s-%s", module.label.id, "lb")
 }
@@ -12,7 +14,7 @@ resource "sakuracloud_auto_scale" "elb_hscale01" {
   config = jsonencode({
     resources : [{
       type : "ServerGroup",
-      name : format("%s-%s", module.label.id, "elb-group"),
+      name : format("%s-%s", module.label.id, local.elb01_name),
       zone : local.zone,
       parent : {
         type : "ELB",
@@ -27,8 +29,8 @@ resource "sakuracloud_auto_scale" "elb_hscale01" {
       template : {
         interface_driver : "virtio",
         plan : {
-          core : 1,
-          memory : 1,
+          core : var.server01["core"],
+          memory : var.server01["memory"],
           dedicated_cpu : false,
         },
         network_interfaces : [
@@ -54,16 +56,16 @@ resource "sakuracloud_auto_scale" "elb_hscale01" {
           }
         ],
         disks : [{
-          os_type : "almalinux",
-          plan : "ssd",
-          connection : "virtio",
-          size : 20,
+          source_archive : var.server01["os"] == "ubuntu18" ? data.sakuracloud_archive.ubuntu18[local.zone].id : var.server01["os"] == "ubuntu20" ? data.sakuracloud_archive.ubuntu20[local.zone].id : var.server01["os"] == "centos8" ? data.sakuracloud_archive.centos8[local.zone].id : var.server01["os"] == "alma8" ? data.sakuracloud_archive.alma8[local.zone].id : var.server01["os"] == "rocky8" ? data.sakuracloud_archive.rocky8[local.zone].id : var.server01["os"] == "miracle8" ? data.sakuracloud_archive.miracle8[local.zone].id : data.sakuracloud_archive.centos7[local.zone].id
+          plan : var.disk01["plan"],
+          connection : var.disk01["connector"],
+          size : var.disk01["size"],
         }],
         edit_parameter : {
           disabled : false,
-          host_name_prefix : "elb-group",
+          host_name_prefix : local.elb01_name,
           password : var.def_pass,
-          disable_pw_auth : true,
+          disable_pw_auth : var.server01["disable_pw_auth"],
           enable_dhcp : false,
           change_partition_uuid : true,
           ssh_key_ids : [sakuracloud_ssh_key_gen.sshkey01.id],
@@ -94,7 +96,7 @@ resource "sakuracloud_auto_scale" "lb_hscale01" {
   config = jsonencode({
     resources : [{
       type : "ServerGroup",
-      name : format("%s-%s", module.label.id, "lb-group"),
+      name : format("%s-%s", module.label.id, local.lb01_name),
       zone : local.zone,
       parent : {
         type : "LoadBalancer",
@@ -109,8 +111,8 @@ resource "sakuracloud_auto_scale" "lb_hscale01" {
       template : {
         interface_driver : "virtio",
         plan : {
-          core : 1,
-          memory : 1,
+          core : var.server02["core"],
+          memory : var.server02["memory"],
           dedicated_cpu : false,
         },
         network_interfaces : [
@@ -133,16 +135,16 @@ resource "sakuracloud_auto_scale" "lb_hscale01" {
           },
         ],
         disks : [{
-          os_type : "almalinux",
-          plan : "ssd",
-          connection : "virtio",
-          size : 20,
+          source_archive : var.server02["os"] == "ubuntu18" ? data.sakuracloud_archive.ubuntu18[local.zone].id : var.server02["os"] == "ubuntu20" ? data.sakuracloud_archive.ubuntu20[local.zone].id : var.server02["os"] == "centos8" ? data.sakuracloud_archive.centos8[local.zone].id : var.server02["os"] == "alma8" ? data.sakuracloud_archive.alma8[local.zone].id : var.server02["os"] == "rocky8" ? data.sakuracloud_archive.rocky8[local.zone].id : var.server02["os"] == "miracle8" ? data.sakuracloud_archive.miracle8[local.zone].id : data.sakuracloud_archive.centos7[local.zone].id
+          plan : var.disk02["plan"],
+          connection : var.disk02["connector"],
+          size : var.disk02["size"],
         }],
         edit_parameter : {
           disabled : false,
-          host_name_prefix : "lb-group",
+          host_name_prefix : local.lb01_name,
           password : var.def_pass,
-          disable_pw_auth : true,
+          disable_pw_auth : var.server02["disable_pw_auth"],
           enable_dhcp : false,
           change_partition_uuid : true,
           ssh_key_ids : [sakuracloud_ssh_key_gen.sshkey01.id],
