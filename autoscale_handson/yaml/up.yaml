@@ -1,0 +1,27 @@
+resources:
+  - type: Server #垂直スケールの場合はServerと設定
+    selector:
+      names: ["scaleup-sv"]
+      zones: ["is1b"]
+
+    parent:
+      type: ELB
+      selector: "scaleup-elb"
+
+    shutdown_force: false
+    setup_grace_period: 30 #スケール後のバランサに戻す猶予時間
+
+    plans:
+      - name: smallest
+        core: 1
+        memory: 1
+      - name: medium
+        core: 3
+        memory: 4
+      - name: largest
+        core: 8
+        memory: 16
+
+# オートスケーラーの動作設定
+autoscaler:
+  cooldown: 300
