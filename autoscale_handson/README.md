@@ -27,15 +27,15 @@ Terraform と usacloud がインストールされた Linux環境を準備し、
 1. あとはたとえば以下のような形で、各 workspace をまとめて構築、削除可能です
     * 全 workspace でまとめて init/plan/apply/output/destroy
     ```fish
-    for i in (seq 1 5); set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform init; end
-    for i in (seq 1 5); set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform plan; end
-    for i in (seq 1 5); set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform apply -auto-approve; end
-    for i in (seq 1 5); set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform output -json; end
-    for i in (seq 1 5); set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform destroy -auto-approve; end
+    for i in (seq 1 5); set -x SAKURACLOUD_PROFILE handson$i; set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform init; end
+    for i in (seq 1 5); set -x SAKURACLOUD_PROFILE handson$i; set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform plan; end
+    for i in (seq 1 5); set -x SAKURACLOUD_PROFILE handson$i; set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform apply -auto-approve; end
+    for i in (seq 1 5); set -x SAKURACLOUD_PROFILE handson$i; set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform output; end
+    for i in (seq 1 5); set -x SAKURACLOUD_PROFILE handson$i; set -x TF_VAR_api_key_id (cat api_key_id.txt | head -$i | tail -1); terraform workspace select handson$i; terraform workspace list; terraform destroy -auto-approve; end
     ```
     * shell は fish 利用のため、bash の場合は以下のようになるので注意してください(planを例にしたサンプル)
     ```shell
-    for i in `seq 1 5`; do export TF_VAR_api_key_id=`cat api_key_id.txt | head -$i | tail -1`; terraform workspace select handson$i; terraform workspace list; terraform plan; done
+    for i in `seq 1 5`; do export SAKURACLOUD_PROFILE=handson$i; export TF_VAR_api_key_id=`cat api_key_id.txt | head -$i | tail -1`; terraform workspace select handson$i; terraform workspace list; terraform plan; done
     ```
 
 ## Tips 
@@ -73,3 +73,4 @@ terraform import sakuracloud_proxylb.elb01 ************
 
 * スケールアウト用の yamlファイルにはサーバのパスワードをそのまま記載することになり、あまり好ましくありません。本サンプルではあえて記載はしておりませんので、適宜修正してください。
   * もうひとつの [autoscale サンプル](https://github.com/shztki/sakura_sample/blob/main/autoscale/autoscale.tf) では、config は jsonencode して渡す形にしてあるので、そちらの方がコード上は安全です。
+
