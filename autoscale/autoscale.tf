@@ -56,7 +56,7 @@ resource "sakuracloud_auto_scale" "elb_hscale01" {
           }
         ],
         disks : [{
-          source_archive : var.server01["os"] == "ubuntu18" ? data.sakuracloud_archive.ubuntu18[local.zone].id : var.server01["os"] == "ubuntu20" ? data.sakuracloud_archive.ubuntu20[local.zone].id : var.server01["os"] == "centos8" ? data.sakuracloud_archive.centos8[local.zone].id : var.server01["os"] == "alma8" ? data.sakuracloud_archive.alma8[local.zone].id : var.server01["os"] == "rocky8" ? data.sakuracloud_archive.rocky8[local.zone].id : var.server01["os"] == "miracle8" ? data.sakuracloud_archive.miracle8[local.zone].id : data.sakuracloud_archive.centos7[local.zone].id
+          source_archive : var.server01["os"] == "ubuntu18" ? data.sakuracloud_archive.ubuntu18[local.zone].id : var.server01["os"] == "ubuntu20" ? data.sakuracloud_archive.ubuntu20[local.zone].id : var.server01["os"] == "alma8" ? data.sakuracloud_archive.alma8[local.zone].id : var.server01["os"] == "rocky8" ? data.sakuracloud_archive.rocky8[local.zone].id : var.server01["os"] == "miracle8" ? data.sakuracloud_archive.miracle8[local.zone].id : data.sakuracloud_archive.centos7[local.zone].id
           plan : var.disk01["plan"],
           connection : var.disk01["connector"],
           size : var.disk01["size"],
@@ -135,7 +135,7 @@ resource "sakuracloud_auto_scale" "lb_hscale01" {
           },
         ],
         disks : [{
-          source_archive : var.server02["os"] == "ubuntu18" ? data.sakuracloud_archive.ubuntu18[local.zone].id : var.server02["os"] == "ubuntu20" ? data.sakuracloud_archive.ubuntu20[local.zone].id : var.server02["os"] == "centos8" ? data.sakuracloud_archive.centos8[local.zone].id : var.server02["os"] == "alma8" ? data.sakuracloud_archive.alma8[local.zone].id : var.server02["os"] == "rocky8" ? data.sakuracloud_archive.rocky8[local.zone].id : var.server02["os"] == "miracle8" ? data.sakuracloud_archive.miracle8[local.zone].id : data.sakuracloud_archive.centos7[local.zone].id
+          source_archive : var.server02["os"] == "ubuntu18" ? data.sakuracloud_archive.ubuntu18[local.zone].id : var.server02["os"] == "ubuntu20" ? data.sakuracloud_archive.ubuntu20[local.zone].id : var.server02["os"] == "alma8" ? data.sakuracloud_archive.alma8[local.zone].id : var.server02["os"] == "rocky8" ? data.sakuracloud_archive.rocky8[local.zone].id : var.server02["os"] == "miracle8" ? data.sakuracloud_archive.miracle8[local.zone].id : data.sakuracloud_archive.centos7[local.zone].id
           plan : var.disk02["plan"],
           connection : var.disk02["connector"],
           size : var.disk02["size"],
