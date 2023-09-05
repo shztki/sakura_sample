@@ -17,6 +17,10 @@ variable "vpc" {
   }
 }
 
+variable "sakura_cidr" {
+  default = "192.168.0.0/24"
+}
+
 # ami
 variable "instance_common" {
   default = {

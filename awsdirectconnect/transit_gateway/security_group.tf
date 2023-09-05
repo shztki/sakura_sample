@@ -3,7 +3,7 @@ data "http" "ip_address" {
 }
 
 locals {
-  office_ip_address = format("%s/32,%s", trimspace(data.http.ip_address.response_body), var.office_cidr)
+  office_ip_address = format("%s/32,%s,%s", trimspace(data.http.ip_address.response_body), var.office_cidr, var.sakura_cidr)
 }
 
 module "allow_office_sg" {
