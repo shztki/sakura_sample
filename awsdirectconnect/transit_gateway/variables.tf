@@ -17,6 +17,10 @@ variable "vpc" {
   }
 }
 
+variable "vpc_cidr" {
+  default = "172.16.0.0/16"
+}
+
 variable "sakura_cidr" {
   default = "192.168.0.0/24"
 }

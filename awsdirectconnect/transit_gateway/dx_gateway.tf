@@ -8,7 +8,6 @@ resource "aws_dx_gateway_association" "dxg_tgw" {
   associated_gateway_id = aws_ec2_transit_gateway.tgw.id
 
   allowed_prefixes = [
-    var.vpc.cidr,
+    var.vpc_cidr,
   ]
-
 }
