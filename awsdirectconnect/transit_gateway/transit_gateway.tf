@@ -61,3 +61,46 @@ resource "aws_route" "public_vpc_sakura" {
 #  destination_cidr_block = var.sakura_cidr
 #  transit_gateway_id     = aws_ec2_transit_gateway.tgw.id
 #}
+
+# route table create for dx_gateway
+data "aws_ec2_transit_gateway_attachment" "dx_gateway" {
+  filter {
+    name   = "transit-gateway-id"
+    values = [aws_ec2_transit_gateway.tgw.id]
+  }
+
+  filter {
+    name   = "resource-type"
+    values = ["direct-connect-gateway"]
+  }
+
+  filter {
+    name   = "state"
+    values = ["available", "pending"]
+  }
+
+  depends_on = [
+    aws_dx_gateway_association.dxg_tgw,
+  ]
+}
+
+resource "aws_ec2_transit_gateway_route_table" "dx_gateway" {
+  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
+
+  tags = merge(
+    module.label.tags,
+    tomap({ Name = format("%s-dx_gateway", module.label.id) }),
+  )
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "dx_gateway" {
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_attachment.dx_gateway.transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dx_gateway.id
+}
+
+resource "aws_ec2_transit_gateway_route" "dx_gateway" {
+  destination_cidr_block         = var.sakura_cidr
+  transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_attachment.dx_gateway.transit_gateway_attachment_id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dx_gateway.id
+}
+

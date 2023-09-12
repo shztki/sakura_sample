@@ -11,6 +11,6 @@ output "ec2_private_ip" {
   value = module.ec2.private_ip
 }
 
-output "ec2_private_private_ip" {
-  value = module.ec2_private.private_ip
-}
+#output "ec2_private_private_ip" {
+#  value = module.ec2_private.private_ip
+#}
