@@ -84,23 +84,25 @@ data "aws_ec2_transit_gateway_attachment" "dx_gateway" {
   ]
 }
 
-resource "aws_ec2_transit_gateway_route_table" "dx_gateway" {
-  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
-
-  tags = merge(
-    module.label.tags,
-    tomap({ Name = format("%s-dx_gateway", module.label.id) }),
-  )
-}
+#resource "aws_ec2_transit_gateway_route_table" "dx_gateway" {
+#  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
+#
+#  tags = merge(
+#    module.label.tags,
+#    tomap({ Name = format("%s-dx_gateway", module.label.id) }),
+#  )
+#}
 
 resource "aws_ec2_transit_gateway_route_table_association" "dx_gateway" {
   transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_attachment.dx_gateway.transit_gateway_attachment_id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dx_gateway.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.vpc.id
+  #transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dx_gateway.id
 }
 
 resource "aws_ec2_transit_gateway_route" "dx_gateway" {
   destination_cidr_block         = var.sakura_cidr
   transit_gateway_attachment_id  = data.aws_ec2_transit_gateway_attachment.dx_gateway.transit_gateway_attachment_id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dx_gateway.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.vpc.id
+  #transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.dx_gateway.id
 }
 

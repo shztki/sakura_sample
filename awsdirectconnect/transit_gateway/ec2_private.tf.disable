@@ -5,7 +5,7 @@ module "ec2_private" {
 
   ami           = data.aws_ami.amazon2_arm.id
   instance_type = "t4g.nano"
-  subnet_id     = module.vpc.private_subnets[0]
+  subnet_id     = module.vpc.private_subnets[2]
 
   vpc_security_group_ids = [module.allow_private_sg.security_group_id]
 
