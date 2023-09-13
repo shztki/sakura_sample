@@ -5,11 +5,11 @@ variable "default_password" {}
 #var.aws_option_secret {}
 
 variable "default_zone" {
-  default = "tk1b" # tk1b, is1b # tk1a, is1a
+  default = "is1b" # tk1b, is1b # tk1a, is1a
 }
 
 variable "zones" {
-  default = ["tk1b"] # tk1b, is1b, # tk1a, is1a
+  default = ["is1b"] # tk1b, is1b, # tk1a, is1a
 }
 
 variable "label" {
