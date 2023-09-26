@@ -1,0 +1,43 @@
+locals {
+  private_ip_address = format("%s,%s", join(",", var.sakura_cidr), var.vpc.cidr)
+}
+
+module "allow_private_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  name        = format("%s-allow-private-sg", module.label.id)
+  description = "allow access from private"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      description = "ssh access"
+      cidr_blocks = local.private_ip_address
+    },
+    {
+      from_port   = "-1"
+      to_port     = "-1"
+      protocol    = "icmp"
+      description = "icmp access"
+      cidr_blocks = local.private_ip_address
+    },
+  ]
+
+  egress_with_cidr_blocks = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      description = "out going"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+
+  tags = merge(
+    module.label.tags,
+    tomap({ Name = module.label.id }),
+  )
+}
