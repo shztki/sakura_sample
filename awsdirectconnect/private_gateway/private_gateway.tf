@@ -1,7 +1,7 @@
 data "aws_vpn_gateway" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["bukuro"]
+    values = ["techsol-shared-aws"]
   }
 }
 
